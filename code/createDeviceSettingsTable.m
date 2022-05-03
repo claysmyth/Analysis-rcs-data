@@ -358,7 +358,20 @@ for iChunk = 1:length(recordingChunks)
             if isempty(TD_SettingsOut)
                 TD_SettingsOut = struct2table(toAdd,'AsArray',true);
             else
-                TD_SettingsOut = [TD_SettingsOut; struct2table(toAdd,'AsArray',true)];
+                if toAdd.samplingRate == 'Disabled'
+                    space = " ";
+                    channel_TD_settings = strcat(toAdd.chan1, space, toAdd.chan2, space, toAdd.chan3, space, toAdd.chan4);
+                    if contains(channel_TD_settings, 'SR-250')
+                        toAdd.samplingRate = 250;
+                    elseif contains(channel_TD_settings, 'SR-500')
+                        toAdd.samplingRate = 500;
+                    elseif contains(channel_TD_settings, 'SR-1000')
+                        toAdd.samplingRate = 1000;
+                    else
+                        toAdd.samplingRate = nan;
+                    end
+                end   
+                TD_SettingsOut = [TD_SettingsOut; struct2table(toAdd,'AsArray',true)];                    
             end
             clear toAdd
         end
